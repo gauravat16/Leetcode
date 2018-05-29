@@ -1,9 +1,6 @@
 package leetcode.dynamicprogramming;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Given a string, your task is to count how many palindromic substrings in this string.
@@ -19,45 +16,69 @@ public class PalindromicSubstrings {
     public List<String> allPlalindromes(String s) {
         List<String> cache = new ArrayList<>();
 
-        return allPlalindromes(s, cache,new HashMap<>(), 0, s.length() - 1);
+        boolean[][] memo = new boolean[s.length()][s.length()];
+
+        return allPalindromes(s, cache, memo, new HashSet<>(), 0, s.length() - 1);
     }
 
-    public List<String> allPlalindromes(String s, List<String> cache, Map<String, String> memo, int start, int end) {
+    public List<String> allPalindromes(String s, List<String> cache, boolean[][] memo, Set<String> notPalindromeSet, int start, int end) {
 
-        if(memo.containsKey(start+","+end)){
-            return cache;
-        }
         if (start > end || end >= s.length()) {
             return cache;
         }
+        if (memo[start][end]) {
+            return cache;
+        }
 
-        allPlalindromes(s, cache,memo, start + 1, end);
-        allPlalindromes(s, cache,memo, start, end - 1);
+
+        allPalindromes(s, cache, memo, notPalindromeSet, start + 1, end);
+        allPalindromes(s, cache, memo, notPalindromeSet, start, end - 1);
+
 
         boolean isPalindrome = true;
-        String subsString = s.substring(start,end+1);
-        for (int i = 0; i < subsString.length(); i++) {
-            if(memo.containsKey(i+","+(subsString.length()-i-1))){
-                continue;
-            }
-            if (subsString.charAt(i) != subsString.charAt(subsString.length()-i-1)) {
+        String subsString = s.substring(start, end + 1);
+        if (subsString.length() > 2) {
+            if (!notPalindromeSet.contains(subsString)) {
+
+                if (memo[start + 1][end]) {
+                    isPalindrome = s.charAt(start) == s.charAt(end);
+                } else {
+                    for (int i = start; i < s.length(); i++) {
+
+                        if (s.charAt(i) != s.charAt(s.length() - i - 1)) {
+                            isPalindrome = false;
+                            break;
+                        }
+                    }
+                }
+
+            } else {
                 isPalindrome = false;
-                break;
             }
+
+
+        } else if (subsString.length() == 2) {
+            isPalindrome = subsString.charAt(0) == subsString.charAt(1);
         }
+
 
         if (isPalindrome) {
             cache.add(subsString);
-            memo.put(start+","+end, subsString);
+            memo[start][end] = true;
+            if (start < s.length() && end < s.length() - 1)
+                memo[start][end + 1] = memo[start][end] && memo[start + 1][end + 1];
+        } else {
+            notPalindromeSet.add(subsString);
         }
-
 
 
         return cache;
     }
 
     public static void main(String[] args) {
+        System.out.println(new PalindromicSubstrings().allPlalindromes("xkjkqlajprjwefilxgpdpebieswu"));
         System.out.println(new PalindromicSubstrings().allPlalindromes("aaa"));
+        System.out.println(new PalindromicSubstrings().allPlalindromes("abc"));
     }
 
 
