@@ -10,9 +10,10 @@ import java.util.*;
 
 public class PalindromicSubstrings {
     public int countSubstrings(String s) {
-        return allPlalindromes(s).size();
+        return dynGetallPlalindromeCount(s);
     }
 
+    //TLE SOLUTION
     public List<String> allPlalindromes(String s) {
         List<String> cache = new ArrayList<>();
 
@@ -65,8 +66,9 @@ public class PalindromicSubstrings {
         if (isPalindrome) {
             cache.add(subsString);
             memo[start][end] = true;
-            if (start < s.length() && end < s.length() - 1)
+            if (start < s.length() && end < s.length() - 1) {
                 memo[start][end + 1] = memo[start][end] && memo[start + 1][end + 1];
+            }
         } else {
             notPalindromeSet.add(subsString);
         }
@@ -75,10 +77,50 @@ public class PalindromicSubstrings {
         return cache;
     }
 
+
+    public int dynGetallPlalindromeCount(String s) {
+        boolean[][] memo = new boolean[s.length()][s.length()];
+
+        int count = 0;
+
+        for (int i = 0; i < s.length(); i++) {
+            memo[i][i] = true;
+            count++;
+
+        }
+
+        for (int i = 0; i < s.length()-1; i++) {
+            if (s.charAt(i) == s.charAt(i + 1)) {
+                memo[i][i + 1] = true;
+                count++;
+            }
+
+        }
+
+
+        for (int window = 3; window < s.length()+1; window++) {
+            for (int start = 0; start < s.length() - window + 1; start++) {
+
+                int end = start + window - 1;
+
+                if (memo[start + 1][end - 1] && s.charAt(start) == s.charAt(end)) {
+                    memo[start][end] = true;
+                    count++;
+                }
+
+            }
+        }
+
+        return count;
+
+    }
+
+
     public static void main(String[] args) {
+        System.out.println(new PalindromicSubstrings().countSubstrings("xkjkqlajprjwefilxgpdpebieswu"));
         System.out.println(new PalindromicSubstrings().allPlalindromes("xkjkqlajprjwefilxgpdpebieswu"));
-        System.out.println(new PalindromicSubstrings().allPlalindromes("aaa"));
-        System.out.println(new PalindromicSubstrings().allPlalindromes("abc"));
+        System.out.println(new PalindromicSubstrings().countSubstrings("aaa"));
+        System.out.println(new PalindromicSubstrings().countSubstrings("abc"));
     }
 
 
