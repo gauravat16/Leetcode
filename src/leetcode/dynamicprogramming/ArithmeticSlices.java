@@ -4,6 +4,30 @@ public class ArithmeticSlices {
 
     public int numberOfArithmeticSlices(int[] A) {
 
+
+        return fastSolution(A);
+
+    }
+
+    private int fastSolution(int[] A) {
+
+        int count = 0, sum = 0;
+
+        for (int index = 2; index < A.length; index++) {
+            if (A[index] - A[index - 1] == A[index - 1] - A[index - 2]) {
+                count++;
+                sum += count;
+            } else {
+                count = 0;
+            }
+
+        }
+
+        return sum;
+    }
+
+
+    private int slowSolution(int[] A) {
         boolean[][] memo = new boolean[A.length][A.length];
 
         int count = 0;
@@ -49,7 +73,8 @@ public class ArithmeticSlices {
     }
 
     public static void main(String[] args) {
-        System.out.println(new ArithmeticSlices().numberOfArithmeticSlices(new int[]{1, 2, 3, 4, 5}));
+        System.out.println(new ArithmeticSlices().fastSolution(new int[]{1, 2, 3, 4, 5}));
+        System.out.println(new ArithmeticSlices().slowSolution(new int[]{1, 2, 3, 4, 5}));
     }
 
 }
