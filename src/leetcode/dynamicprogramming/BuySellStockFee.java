@@ -1,14 +1,18 @@
 package leetcode.dynamicprogramming;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class BuySellStockFee {
 
     public int maxProfitSwitcher(int[] prices, int fee, boolean isRecursive) {
 
 
-        if (isRecursive)
-            return maxProfit(prices, fee, 0, 0, false);
-        else
+        if (isRecursive) {
+            Map<Integer, Integer> dp = new HashMap<>();
+            return maxProfit(prices, fee, 0, 0, false, dp);
+        } else
             return maxProfit(prices, fee);
 
     }
@@ -25,8 +29,11 @@ public class BuySellStockFee {
      * @return
      */
 
-    public int maxProfit(int[] prices, int fee, int index, int profit, boolean hasStock) {
+    public int maxProfit(int[] prices, int fee, int index, int profit, boolean hasStock, Map<Integer, Integer> dp) {
 
+//        if (dp.containsKey(index)) {
+//            return dp.get(index);
+//        }
         if (index >= prices.length) {
             return profit;
         }
@@ -37,12 +44,14 @@ public class BuySellStockFee {
 
 
         if (!hasStock)
-            profitIfBought = maxProfit(prices, fee, index + 1, profit - prices[index], true);
+            profitIfBought = maxProfit(prices, fee, index + 1, profit - prices[index], true, dp);
         if (hasStock)
-            profitIfSold = maxProfit(prices, fee, index + 1, profit + prices[index] - fee, false);
-        int profitIfLeft = maxProfit(prices, fee, index + 1, profit, hasStock);
+            profitIfSold = maxProfit(prices, fee, index + 1, profit + prices[index] - fee, false, dp);
+        int profitIfLeft = maxProfit(prices, fee, index + 1, profit, hasStock, dp);
 
-        return Math.max(Math.max(profitIfBought, profitIfSold), profitIfLeft);
+        dp.put(index, Math.max(Math.max(profitIfBought, profitIfSold), profitIfLeft));
+
+        return dp.get(index);
 
 
     }
@@ -68,7 +77,7 @@ public class BuySellStockFee {
 
 
     public static void main(String[] args) {
-        System.out.println(new BuySellStockFee().maxProfitSwitcher(new int[]{1, 3, 2, 8, 4, 9}, 2, true));
+        System.out.println(new BuySellStockFee().maxProfitSwitcher(new int[]{1,2,3,0,2}, 0, true));
         System.out.println(new BuySellStockFee().maxProfitSwitcher(new int[]{1, 3, 2, 8, 4, 9}, 2, false));
     }
 
