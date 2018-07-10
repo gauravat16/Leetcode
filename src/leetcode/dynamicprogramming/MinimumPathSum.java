@@ -1,5 +1,7 @@
 package leetcode.dynamicprogramming;
 
+import java.util.Arrays;
+
 /**
  * Given a m x n grid filled with non-negative numbers, find a path from top left to bottom right which minimizes the sum of all numbers along its path.
  */
@@ -32,11 +34,34 @@ public class MinimumPathSum {
         return minGrid[rows - 1][cols - 1];
     }
 
+    public int minPathRecursive(int[][] grid, int[][] mem, int i, int j) {
+
+        if (i == grid.length - 1 && j == grid[0].length - 1) {
+            return grid[i][j];
+        }
+
+        if (i >= grid.length || j >= grid[0].length) {
+            return Integer.MAX_VALUE;
+        }
+
+        if (mem[i][j] != 0) return mem[i][j];
+
+
+        mem[i][j] = grid[i][j] + Math.min(minPathRecursive(grid, mem, i + 1, j), minPathRecursive(grid, mem, i, j + 1));
+        return mem[i][j];
+    }
+
     public static void main(String[] args) {
 
         int[][] inpArr = {{1, 3, 1},
                 {1, 5, 1},
                 {4, 2, 1}};
         System.out.println(new MinimumPathSum().minPathSum(inpArr));
+
+        int[][] minGrid = new int[inpArr.length][inpArr[0].length];
+
+        System.out.println(new MinimumPathSum().minPathRecursive(inpArr, minGrid, 0, 0));
+
+        System.out.println(Arrays.deepToString(minGrid));
     }
 }
