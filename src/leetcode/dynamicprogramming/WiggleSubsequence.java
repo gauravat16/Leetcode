@@ -24,7 +24,7 @@ public class WiggleSubsequence {
 
     public int wiggleMaxLength(int[] nums) {
 
-        if(nums.length<2){
+        if (nums.length < 2) {
             return nums.length;
         }
 
@@ -49,7 +49,36 @@ public class WiggleSubsequence {
 
     }
 
+
+    public int wiggleMaxLengthGreedy(int[] nums) {
+        if (nums.length < 2) {
+            return nums.length;
+        }
+
+        int count = 0;
+
+        int preDiff = nums[1] - nums[0];
+
+        count = (preDiff != 0) ? 2 : 1;
+
+        for (int i = 1; i < nums.length; i++) {
+            int diff = nums[i] - nums[i - 1];
+
+            if ((diff > 0 && preDiff <= 0) || (diff < 0 && preDiff >= 0)) {
+                count++;
+                preDiff = diff;
+            }
+        }
+
+
+        return count;
+
+
+    }
+
+
     public static void main(String[] args) {
         System.out.println(new WiggleSubsequence().wiggleMaxLength(new int[]{1, 17, 5, 10, 13, 15, 10, 5, 16, 8}));
+        System.out.println(new WiggleSubsequence().wiggleMaxLengthGreedy(new int[]{1, 17, 5, 10, 13, 15, 10, 5, 16, 8}));
     }
 }
