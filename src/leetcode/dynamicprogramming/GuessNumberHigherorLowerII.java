@@ -39,8 +39,9 @@ public class GuessNumberHigherorLowerII {
             return 0;
         }
 
-        if (dp[n][currentIndex] != 0){
-            return  dp[n][currentIndex];
+
+        if (dp[n][currentIndex] != 0) {
+            return dp[n][currentIndex];
         }
 
         int minTillNow = Integer.MAX_VALUE;
