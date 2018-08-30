@@ -1,6 +1,8 @@
 package leetcode.dynamicprogramming;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A sequence X_1, X_2, ..., X_n is fibonacci-like if:
@@ -41,34 +43,31 @@ public class LengthofLongestFibonacciSubsequence {
     public int lenLongestFibSubseq(int[] A) {
 
         int len = A.length;
+        Set<Integer> numSet = new HashSet<>();
 
-        int[][] dp = new int[len][len];
-
-        Arrays.fill(dp[0], 1);
+        Arrays.stream(A).forEach(i -> numSet.add(i));
 
         int maxLen = 0;
         for (int i = 0; i < len; i++) {
-            int lastIndex = i;
             for (int j = i + 1; j < len; j++) {
 
 
-                if (isFactorial(A, lastIndex -1, lastIndex,j)) {
-                    int temp = dp[i][lastIndex];
-                    dp[i][j] = temp + 2;
-                    lastIndex = j + 1;
-                    if(lastIndex < len){
-                        dp[i][lastIndex] = dp[i][j];
+                int tempLen = 2;
 
-                    }
+                int i_0 = A[i];
+                int i_1 = A[j];
+                int i_2 = i_0 + i_1;
 
-                } else {
-                    dp[i][j] = dp[i][lastIndex];
+                while (numSet.contains(i_2)) {
+                    int temp = i_2;
+                    i_2 += i_1;
+                    i_1 = temp;
 
+                    maxLen = Math.max(maxLen, ++tempLen);
                 }
 
 
             }
-            maxLen = Math.max(dp[i][len - 1], maxLen);
 
         }
 
@@ -78,7 +77,7 @@ public class LengthofLongestFibonacciSubsequence {
     }
 
     boolean isFactorial(int[] A, int i, int i_1, int i_2) {
-        if(i < 0){
+        if (i < 0) {
             return true;
         }
         if (i_1 >= A.length || i_1 + 1 >= A.length) {
